@@ -17,76 +17,41 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --cream: #F3EEE3;
-    --green: #1E3A2F;
-    --stone: #8A8273;
-    --rule: #D8D0BF;
-  }
+  :root { --cream: #F3EEE3; --green: #1E3A2F; --rule: #CFC6B3; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { background: var(--green); padding: 18px; }
   body {
     min-height: calc(100vh - 36px);
-    display: flex;
-    flex-direction: column;
     background: var(--cream);
     color: var(--green);
     font-family: "Libre Baskerville", Baskerville, "Baskerville Old Face", Georgia, serif;
-    font-size: 17px;
-    line-height: 1.75;
+    font-size: 18px;
+    line-height: 1.45;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
-  header, main {
-    width: 100%;
-    max-width: 620px;
-    margin: 0 auto;
-    padding-left: 32px;
-    padding-right: 32px;
-  }
-  header { padding-top: 14vh; }
-  .wordmark {
-    font-size: 34px;
-    line-height: 1.2;
-    font-weight: 400;
-    letter-spacing: 0.3em;
-    margin-right: -0.3em;
-    text-transform: uppercase;
-  }
-  main { flex: 1; padding-top: 9vh; padding-bottom: 12vh; }
-  .lead {
-    font-size: 23px;
-    line-height: 1.55;
-    margin-bottom: 2.2em;
-  }
-  main p + p { margin-top: 1.1em; }
-  .contact { margin-top: 2.6em !important; }
-  a { color: var(--green); text-decoration: none; border-bottom: 1px solid var(--rule); transition: border-color .2s; }
+  .wrap { max-width: 860px; padding: 12vh 8vw 10vh; }
+  h1 { font-size: 40px; font-weight: 400; line-height: 1.1; margin-bottom: 1.4em; }
+  p { max-width: 44em; }
+  p + p { margin-top: 0.85em; }
+  a { color: var(--green); text-decoration: none; border-bottom: 1px solid var(--rule); }
   a:hover, a:focus-visible { border-bottom-color: var(--green); outline: none; }
   @media (max-width: 520px) {
     html { padding: 10px; }
     body { font-size: 16px; min-height: calc(100vh - 20px); }
-    header { padding-top: 9vh; }
-    .lead { font-size: 20px; }
-    .wordmark { font-size: 26px; }
-    header, main { padding-left: 24px; padding-right: 24px; }
+    .wrap { padding: 9vh 26px 8vh; }
+    h1 { font-size: 32px; }
   }
 </style>
 </head>
 <body>
-  <header>
-    <h1 class="wordmark">Namulis</h1>
-  </header>
-
-  <main>
-    <p class="lead">We advise business leaders, families and companies, and often invest alongside them where we have conviction.</p>
-
-    <p>Our clients come to us with their most consequential decisions: acquisitions, divestments, capital raising and restructuring.</p>
-    <p>We work across the capital structure, with particular depth in special situations.</p>
+  <div class="wrap">
+    <h1>NAMULIS</h1>
+    <p>We advise business leaders, families and companies, and often invest alongside them where we have conviction.</p>
+    <p>Our clients come to us with their most consequential decisions: acquisitions, divestments, capital raising and restructuring. We work across the capital structure, with particular depth in special situations.</p>
     <p>Rooted in Africa, we follow our clients across markets.</p>
     <p>We take on few situations, and stay with them.</p>
-
-    <p class="contact"><a href="mailto:enquiries@namulisholding.com">enquiries@namulisholding.com</a></p>
-  </main>
+    <p><a href="mailto:enquiries@namulisholding.com">enquiries@namulisholding.com</a></p>
+  </div>
 </body>
 </html>

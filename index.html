@@ -109,9 +109,25 @@
       raf = cells.size ? requestAnimationFrame(tick) : null;
     }
     function pos(ev) { var b = c.getBoundingClientRect(); return [ev.clientX - b.left, ev.clientY - b.top]; }
-    document.body.addEventListener('pointermove', function (ev) { var p = pos(ev); move(p[0], p[1]); });
+    var touchy = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    if (touchy) { S = 7; R = 2.6; }        // slightly finer grid, wider brush for a fingertip
+    // Mouse / pen
+    document.body.addEventListener('pointermove', function (ev) {
+      if (ev.pointerType === 'touch') return;
+      var p = pos(ev); move(p[0], p[1]);
+    });
     document.body.addEventListener('pointerleave', function () { last = null; });
+    // Touch: touch events keep firing while the page scrolls (pointer events cancel)
+    function onTouch(ev) {
+      var t = ev.touches && ev.touches[0]; if (!t) return;
+      var p = pos(t); move(p[0], p[1]);
+    }
+    document.addEventListener('touchstart', function (ev) { last = null; onTouch(ev); }, { passive: true });
+    document.addEventListener('touchmove', onTouch, { passive: true });
+    document.addEventListener('touchend', function () { last = null; }, { passive: true });
+    document.addEventListener('touchcancel', function () { last = null; }, { passive: true });
     window.addEventListener('resize', size);
+    if (window.ResizeObserver) new ResizeObserver(size).observe(document.body);
     size();
   })();
   </script>

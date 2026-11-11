@@ -10,7 +10,11 @@
 <meta property="og:url" content="https://www.namulisholding.com/">
 <meta property="og:title" content="Namulis">
 <meta property="og:description" content="We advise business leaders, families and companies, and often invest alongside them where we have conviction.">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://www.namulisholding.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.namulisholding.com/og.png">
 <meta name="theme-color" content="#1E3A2F">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,9 +23,9 @@
 <style>
   :root { --cream: #F3EEE3; --green: #1E3A2F; --rule: #CFC6B3; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { background: var(--green); padding: 18px; }
+  html { background: var(--green); padding: 12px; }
   body {
-    min-height: calc(100vh - 36px);
+    min-height: calc(100vh - 24px);
     background: var(--cream);
     color: var(--green);
     font-family: "Libre Baskerville", Baskerville, "Baskerville Old Face", Georgia, serif;
@@ -29,7 +33,11 @@
     line-height: 1.45;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    position: relative;
+    overflow-x: hidden;
   }
+  #field { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; z-index: 0; }
+  .wrap { position: relative; z-index: 1; }
   .wrap { max-width: 1040px; padding: 12vh 8vw 10vh; }
   h1 { font-size: 40px; font-weight: 400; line-height: 1.1; margin-bottom: 0.9em; }
   p { max-width: 44em; }
@@ -37,8 +45,8 @@
   a { color: var(--green); text-decoration: none; border-bottom: 1px solid var(--rule); }
   a:hover, a:focus-visible { border-bottom-color: var(--green); outline: none; }
   @media (max-width: 520px) {
-    html { padding: 10px; }
-    body { font-size: 16px; min-height: calc(100vh - 20px); }
+    html { padding: 7px; }
+    body { font-size: 16px; min-height: calc(100vh - 14px); }
     .wrap { padding: 9vh 26px 8vh; }
     h1 { font-size: 32px; }
   }
@@ -53,5 +61,59 @@
     <p>We take on few situations, and stay with them.</p>
     <p><a href="mailto:enquiries@namulisholding.com">enquiries@namulisholding.com</a></p>
   </div>
+
+  <canvas id="field" aria-hidden="true"></canvas>
+  <script>
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+    var c = document.getElementById('field'), x = c.getContext('2d');
+    var S = 8, GAP = 1, R = 2.2;           // cell size, gutter, brush radius in cells
+    var cells = new Map(), W = 0, H = 0, dpr = 1, last = null, raf = null;
+    function size() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = c.offsetWidth; H = c.offsetHeight;
+      c.width = W * dpr; c.height = H * dpr;
+      x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function touch(px, py) {
+      var cx = Math.floor(px / S), cy = Math.floor(py / S), r = Math.ceil(R);
+      for (var dy = -r; dy <= r; dy++) for (var dx = -r; dx <= r; dx++) {
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d > R || Math.random() < d / R * 0.75) continue;  // ragged edge
+        var k = (cx + dx) + ',' + (cy + dy), e = cells.get(k);
+        var a = 0.75 - d / R * 0.4;
+        if (!e) cells.set(k, { i: cx + dx, j: cy + dy, a: a, ox: 0, oy: 0, vx: (Math.random() - .5) * .15, vy: (Math.random() - .5) * .15 });
+        else e.a = Math.max(e.a, a);
+      }
+      if (!raf) raf = requestAnimationFrame(tick);
+    }
+    function move(px, py) {
+      if (last) {                             // fill gaps on fast moves
+        var dx = px - last[0], dy = py - last[1], n = Math.ceil(Math.hypot(dx, dy) / (S * 1.5));
+        for (var t = 1; t <= n; t++) touch(last[0] + dx * t / n, last[1] + dy * t / n);
+      } else touch(px, py);
+      last = [px, py];
+    }
+    function tick() {
+      x.clearRect(0, 0, W, H);
+      x.fillStyle = '#1E3A2F';
+      cells.forEach(function (e, k) {
+        e.a -= 0.02;                           // ~0.6s fade
+        e.ox += e.vx; e.oy += e.vy;            // slow drift
+        if (e.a <= 0) { cells.delete(k); return; }
+        x.globalAlpha = e.a;
+        x.fillRect(e.i * S + e.ox, e.j * S + e.oy, S - GAP, S - GAP);
+      });
+      x.globalAlpha = 1;
+      raf = cells.size ? requestAnimationFrame(tick) : null;
+    }
+    function pos(ev) { var b = c.getBoundingClientRect(); return [ev.clientX - b.left, ev.clientY - b.top]; }
+    document.body.addEventListener('pointermove', function (ev) { var p = pos(ev); move(p[0], p[1]); });
+    document.body.addEventListener('pointerleave', function () { last = null; });
+    window.addEventListener('resize', size);
+    size();
+  })();
+  </script>
 </body>
 </html>

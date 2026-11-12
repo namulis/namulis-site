@@ -71,7 +71,16 @@
         note.textContent = 'These credentials are not recognised. Access is by invitation only.';
         history.replaceState(null, '', location.pathname);
       }
-      f.addEventListener('submit', function () { btn.disabled = true; btn.textContent = 'Verifying…'; note.textContent = ''; });
+      // TEMP: Worker route not live yet, so show the refusal instead of posting.
+      f.addEventListener('submit', function (e) {
+        e.preventDefault();
+        btn.disabled = true; btn.textContent = 'Verifying…'; note.textContent = '';
+        setTimeout(function () {
+          document.getElementById('pw').value = '';
+          btn.disabled = false; btn.textContent = 'Sign in';
+          note.textContent = 'These credentials are not recognised. Access is by invitation only.';
+        }, 1100);
+      });
     })();
   </script>
 </body>

@@ -52,11 +52,11 @@
   <main class="card">
     <h1>NAMULIS</h1>
 
-    <form id="f" autocomplete="on">
+    <form id="f" method="post" action="/investors/login" autocomplete="on">
       <label for="email">Email</label>
-      <input id="email" type="email" autocomplete="username" required>
+      <input id="email" name="email" type="email" autocomplete="username" required>
       <label for="pw">Password</label>
-      <input id="pw" type="password" autocomplete="current-password" required>
+      <input id="pw" name="password" type="password" autocomplete="current-password" required>
       <button type="submit">Sign in</button>
     </form>
 
@@ -65,18 +65,13 @@
     <a class="back" href="/">&larr; namulisholding.com</a>
   </main>
   <script>
-    // Display only: nothing typed here is checked, sent or stored.
     (function () {
       var f = document.getElementById('f'), note = document.getElementById('note'), btn = f.querySelector('button');
-      f.addEventListener('submit', function (e) {
-        e.preventDefault();
-        btn.disabled = true; btn.textContent = 'Verifying…'; note.textContent = '';
-        setTimeout(function () {
-          document.getElementById('pw').value = '';
-          btn.disabled = false; btn.textContent = 'Sign in';
-          note.textContent = 'These credentials are not recognised. Access is by invitation only.';
-        }, 1100);
-      });
+      if (/[?&]e=1/.test(location.search)) {
+        note.textContent = 'These credentials are not recognised. Access is by invitation only.';
+        history.replaceState(null, '', location.pathname);
+      }
+      f.addEventListener('submit', function () { btn.disabled = true; btn.textContent = 'Verifying…'; note.textContent = ''; });
     })();
   </script>
 </body>
